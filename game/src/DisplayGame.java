@@ -1,6 +1,9 @@
 import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import java.awt.*;
-import java.util.ArrayList;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class DisplayGame {
 
@@ -11,13 +14,21 @@ public class DisplayGame {
 
     private String titleOfwindow;
     private int widthOfWindow, heightOfWindow;
+    public boolean newGame;
+    public boolean highScore;
+    public boolean levels;
+    public boolean exitGame;
+    MenuListener gameHelpHandler;
+    MenuListener gameAboutHandler;
 
-    public DisplayGame(String title, int width, int height){
+
+    public DisplayGame(String title, int width, int height,MenuListener gameHelpHandler,MenuListener gameAboutHandler){
         this.heightOfWindow = height;
         this.widthOfWindow = width;
         this.titleOfwindow = title;
+        this.gameHelpHandler=gameHelpHandler;
+        this.gameAboutHandler=gameAboutHandler;
         createDisplay();
-
     }
 
     private void createDisplay(){
@@ -28,7 +39,6 @@ public class DisplayGame {
         gameWindow.setVisible(true);
         gameWindow.setResizable(false);
         gameWindow.setJMenuBar(createMenuBar());
-
         canvas = new Canvas();
         canvas.setPreferredSize(new Dimension(widthOfWindow,heightOfWindow));
         canvas.setMaximumSize(new Dimension(widthOfWindow,heightOfWindow));
@@ -39,6 +49,7 @@ public class DisplayGame {
         gameWindow.pack();
     }
 
+
     public Canvas getCanvas() {
         return canvas;
     }
@@ -48,15 +59,48 @@ public class DisplayGame {
     }
 
     private JMenuBar createMenuBar(){
-        gameMenu = new JMenu("Menu");
-        gameMenu.add(new JMenuItem("New Game"));
-        gameMenu.add(new JMenuItem("High Scores"));
-        gameMenu.add(new JMenuItem("Levels"));
-        gameMenu.add(new JMenuItem("Exit"));
 
+        JMenuItem menuItemNew = new JMenuItem("New Game");
+        JMenuItem menuItemHighScores = new JMenuItem("High Scores");
+        JMenuItem menuItemLevels = new JMenuItem("Levels");
+        JMenuItem menuItemExit = new JMenuItem("Exit");
+
+        gameMenu = new JMenu("Menu");
+        gameMenu.add(menuItemNew);
+        gameMenu.add(menuItemHighScores);
+        gameMenu.add(menuItemLevels);
+        gameMenu.add(menuItemExit);
 
         gameHelp = new JMenu("Help");
         gameAbout = new JMenu("About");
+
+        menuItemNew.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                newGame = true;
+            }
+        });
+        menuItemHighScores.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                highScore = true;
+            }
+        });
+        menuItemLevels.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                levels = true;
+            }
+        });
+        menuItemExit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                exitGame = true;
+            }
+        });
+
+        gameHelp.addMenuListener(gameHelpHandler);
+        gameAbout.addMenuListener(gameAboutHandler);
 
         gameMenuBar = new JMenuBar();
         gameMenuBar.add(gameMenu);
